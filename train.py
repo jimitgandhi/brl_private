@@ -167,19 +167,19 @@ if __name__ == '__main__':
                 real_logit = D(img_norm, txt_feat)
                 #real_loss = F.binary_cross_entropy_with_logits(real_logit, ONES)
                 real_loss = F.mse_loss(F.sigmoid(real_logit), ONES)
-                avg_D_real_loss += real_loss.data[0]
+                avg_D_real_loss += real_loss.item()
                 real_loss.backward()
                 # real image with mismatching text
                 real_m_logit = D(img_norm, txt_feat_mismatch)
                 #real_m_loss = 0.5 * F.binary_cross_entropy_with_logits(real_m_logit, ZEROS)
                 real_m_loss = 0.5 * F.mse_loss(F.sigmoid(real_m_logit), ZEROS)
-                avg_D_real_m_loss += real_m_loss.data[0]
+                avg_D_real_m_loss += real_m_loss.item()
                 real_m_loss.backward()
                 # synthesized image with semantically relevant text
                 fake, _ = G(img_G, txt_feat_relevant)
                 fake_logit = D(fake.detach(), txt_feat_relevant)
                 fake_loss = 0.5 * F.mse_loss(F.sigmoid(fake_logit), ZEROS)
-                avg_D_fake_loss += fake_loss.data[0]
+                avg_D_fake_loss += fake_loss.item()
                 fake_loss.backward()
                 d_optimizer.step()
 
@@ -187,10 +187,10 @@ if __name__ == '__main__':
             G.zero_grad()
             fake, (z_mean, z_log_stddev) = G(img_G, txt_feat_relevant)
             kld = torch.mean(-z_log_stddev + 0.5 * (torch.exp(2 * z_log_stddev) + torch.pow(z_mean, 2) - 1))
-            avg_kld += kld.data[0]
+            avg_kld += kld.item()
             fake_logit = D(fake, txt_feat_relevant)
             fake_loss = F.mse_loss(F.sigmoid(fake_logit), ONES)
-            avg_G_fake_loss += fake_loss.data[0]
+            avg_G_fake_loss += fake_loss.item()
             G_loss = fake_loss + kld
             G_loss.backward()
             g_optimizer.step()

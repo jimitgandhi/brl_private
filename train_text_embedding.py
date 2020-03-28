@@ -1,5 +1,5 @@
 import argparse
-from fastText import FastText
+import fasttext as FastText
 
 import torch
 import torch.nn as nn
@@ -108,7 +108,7 @@ if __name__ == '__main__':
             optimizer.zero_grad()
             img_feat, txt_feat = model(img, desc)
             loss = pairwise_ranking_loss(args.margin, img_feat, txt_feat)
-            avg_loss += loss.data[0]
+            avg_loss += loss.item()
             loss.backward()
             optimizer.step()
 

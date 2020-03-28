@@ -8,7 +8,8 @@ from nltk.tokenize import RegexpTokenizer
 
 import torch
 import torch.utils.data as data
-from torch.utils.serialization import load_lua
+import torchfile
+# from torch.utils.serialization import load_lua
 import torchvision.transforms as transforms
 
 
@@ -42,8 +43,8 @@ class ReedICML2016(data.Dataset):
                     if caption_root == '/disk2/datasets/FashionGAN_txt':
                         datum = cPickle.load(open(os.path.join(caption_root, cls, filename),"rb"))
                     else:
-                        datum = load_lua(os.path.join(caption_root, cls, filename))
-                    raw_desc = datum['char'].numpy()
+                        datum = torchfile.load(os.path.join(caption_root, cls, filename))
+                    raw_desc = datum['char']
                     desc, len_desc = self._get_word_vectors(raw_desc, word_embedding)
                     output.append({
                         'img': os.path.join(img_root, datum['img']),

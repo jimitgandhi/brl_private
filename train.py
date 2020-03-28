@@ -1,5 +1,5 @@
 import argparse
-from fastText import FastText
+import fasttext as FastText
 import numpy as np
 
 import torch
